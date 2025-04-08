@@ -20,7 +20,7 @@ pip install future
 You can start by running graphical layout to play manually with pacman:
 
 ```zsh
-python pacman.py
+python pacman.py -p StrategicAgentWithEvolution -l mediumClassic -n 10000 --frameTime 0 -q
 ```
 
 For more details on commands options to run, see the [commands file](commands.md)

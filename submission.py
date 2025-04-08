@@ -31,7 +31,7 @@ class MultiAgentSearchAgent(Agent):
 
 class MinimaxAgent(MultiAgentSearchAgent):
     """
-    Your minimax agent (problem 1)
+    Your minimax agent
     """
 
     def getAction(self, gameState):
@@ -49,7 +49,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
             if agentIndex == 0:
                 return maxValue(agentIndex, depth, state)
 
-            # Ghosts (minimizing players)
+            # Ghosts (minimizing bots)
             else:
                 return minValue(agentIndex, depth, state)
 

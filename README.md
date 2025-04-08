@@ -1,15 +1,19 @@
 # Project Description
 
-This project contains the code for student's project pacman multiagent of my AI course.
-The code is forked from the original course project given at [Standford CSS 221](https://github.com/stanford-cs221/autumn2019/tree/gh-pages/assignments/pacman)
+## Features
+
+- **Minimax Agent**: Implements the Minimax algorithm for adversarial search.
+- **Strategic Agent with Evolution**: Uses deep learning and evolutionary strategies for decision-making.
+- **Replay Buffer**: Stores experiences for training the Strategic Agent.
+- **Custom Evaluation Functions**: Enhances Pacman's decision-making by evaluating game states.
 
 ## Requirements
 
-This code runs with python 3, you just need a recent version of python 3 installed and to clone this repository.
+This code runs with Python 3. You just need a recent version of Python 3 installed and to clone this repository.
 
-### troubleshooting
+### Troubleshooting
 
-This code was translated from python 2 to 3, in case of error you might need to install the package `future`:
+This code was translated from Python 2 to 3. In case of errors, you might need to install the package `future`:
 
 ```zsh
 pip install future
@@ -17,24 +21,34 @@ pip install future
 
 ## Usage
 
-You can start by running graphical layout to play with Deeplearning pacman:
+### Running Pacman with Different Agents
 
+1. **Strategic Agent with Evolution**:
+   ```zsh
+   python pacman.py -p StrategicAgentWithEvolution -l mediumClassic -n 10000 --frameTime 0
+   ```
+   Add `-q` to execute in the background:
+   ```zsh
+   python pacman.py -p StrategicAgentWithEvolution -l mediumClassic -n 10000 --frameTime 0 -q
+   ```
+
+2. **Minimax Agent**:
+   ```zsh
+   python pacman.py -p MinimaxAgent -a depth=4 --frameTime 0
+   ```
+
+### Layouts
+
+The project includes several layouts for testing:
+- `smallClassic`
+- `mediumClassic`
+- `originalClassic`
+
+You can specify layouts using the `-l` flag:
 ```zsh
-python pacman.py -p StrategicAgentWithEvolution -l mediumClassic -n 10000 --frameTime 0
-```
-You can add :
-```zsh
--q
-```
-To execute in background.
-```zsh
-python pacman.py -p MinimaxAgent -a depth=4 --frameTime 0
+python pacman.py -l smallClassic -p MinimaxAgent
 ```
 
-## Licensing information
+### Credit
 
-Please do not distribute or publish solutions to this
-project. You are free to use and extend these projects for educational
-purposes. The Pacman AI projects were developed at UC Berkeley, primarily by
-John DeNero (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
-For more info, see http://inst.eecs.berkeley.edu/~cs188/sp09/pacman.html
+Kaber-Grou (Me)

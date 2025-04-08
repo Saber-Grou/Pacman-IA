@@ -25,7 +25,7 @@ pip install future
 
 1. **Strategic Agent with Evolution**:
    ```zsh
-   python pacman.py -p StrategicAgentWithEvolution -l mediumClassic -n 10000 --frameTime 0
+   python pacman.py -p StrategicAgentWithEvolution -l mediumClassic -n 20 --frameTime 0
    ```
    Add `-q` to execute in the background:
    ```zsh

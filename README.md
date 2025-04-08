@@ -17,13 +17,19 @@ pip install future
 
 ## Usage
 
-You can start by running graphical layout to play manually with pacman:
+You can start by running graphical layout to play with Deeplearning pacman:
 
 ```zsh
-python pacman.py -p StrategicAgentWithEvolution -l mediumClassic -n 10000 --frameTime 0 -q
+python pacman.py -p StrategicAgentWithEvolution -l mediumClassic -n 10000 --frameTime 0
 ```
-
-For more details on commands options to run, see the [commands file](commands.md)
+You can add :
+```zsh
+-q
+```
+To execute in background.
+```zsh
+python pacman.py -p MinimaxAgent -a depth=4 --frameTime 0
+```
 
 ## Licensing information
 

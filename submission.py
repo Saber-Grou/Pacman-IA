@@ -21,7 +21,6 @@ BATCH_SIZE = 256
 REPLAY_BUFFER_CAPACITY = 100000000
 LEARNING_RATE = 0.0005
 DISCOUNT_FACTOR = 0.99
-# Hyperparameters for the neural network
 
 class MultiAgentSearchAgent(Agent):
 

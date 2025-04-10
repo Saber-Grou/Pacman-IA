@@ -14,13 +14,13 @@ FOOD_REWARD = 15
 CAPSULE_REWARD = 100
 GHOST_PENALTY = -25
 PATTERN_PENALTY = -50
-MAX_PATTERN_LENGTH = 5
+MAX_PATTERN_LENGTH = 8
 MAX_RECENT_POSITIONS = 5
 TARGET_UPDATE_FREQUENCY = 10
-BATCH_SIZE = 128
-REPLAY_BUFFER_CAPACITY = 1000000
+BATCH_SIZE = 256
+REPLAY_BUFFER_CAPACITY = 100000000
 LEARNING_RATE = 0.0005
-DISCOUNT_FACTOR = 0.95
+DISCOUNT_FACTOR = 0.99
 
 class MultiAgentSearchAgent(Agent):
 
@@ -120,8 +120,13 @@ class StrategicAgentWithEvolution(Agent):
         # Check if the model file exists
         if os.path.exists("pacman_model.pth"):
             print("Loading existing model...")
-            self.model.load_state_dict(torch.load("pacman_model.pth"))
-            self.model.eval()
+            try:
+                self.model.load_state_dict(torch.load("pacman_model.pth"))
+                self.model.eval()
+            except RuntimeError as e:
+                print(f"Error loading model: {e}")
+                print("Creating a new model...")
+                self.save_model()
         else:
             print("No existing model found. Creating a new model...")
             self.save_model()
@@ -139,18 +144,20 @@ class StrategicAgentWithEvolution(Agent):
 
     def _build_model(self):
         """
-        Builds a more precise neural network model.
+        Builds an improved neural network model.
         """
         return nn.Sequential(
-            nn.Linear(9, 256),
+            nn.Linear(9, 512),
+            nn.BatchNorm1d(512),
+            nn.ReLU(),
+            nn.Dropout(0.2),  # Dropout to prevent overfitting
+            nn.Linear(512, 256),
             nn.BatchNorm1d(256),
             nn.ReLU(),
+            nn.Dropout(0.2),
             nn.Linear(256, 128),
-            nn.BatchNorm1d(128),
             nn.ReLU(),
-            nn.Linear(128, 64),
-            nn.ReLU(),
-            nn.Linear(64, 5)
+            nn.Linear(128, 5)  # Output layer for 5 possible actions
         )
 
     def extract_features(self, gameState):
@@ -199,6 +206,7 @@ class StrategicAgentWithEvolution(Agent):
         """
         Chooses an action using the neural network model.
         """
+        self.model.eval()  # Désactiver BatchNorm et Dropout en mode prédiction
         legalMoves = gameState.getLegalActions()
         features = self.extract_features(gameState)
         features_tensor = torch.tensor(features, dtype=torch.float32).unsqueeze(0).to(self.device)
@@ -211,7 +219,7 @@ class StrategicAgentWithEvolution(Agent):
         action_to_index = {Directions.NORTH: 0, Directions.SOUTH: 1, Directions.EAST: 2, Directions.WEST: 3, Directions.STOP: 4}
         index_to_action = {v: k for k, v in action_to_index.items()}
 
-        # Choose the best legal action
+        # Filter scores for legal moves only
         best_action = None
         best_score = float('-inf')
         for action in legalMoves:
@@ -223,7 +231,7 @@ class StrategicAgentWithEvolution(Agent):
         # Vérifier si Pacman est bloqué dans un cycle
         pacmanPosition = gameState.getPacmanPosition()
         if pacmanPosition in self.recent_positions:
-            # print("Cycle detected! Forcing a different action.")
+            # Forcer une action différente en cas de cycle
             legalMoves.remove(best_action)  # Retirer l'action choisie
             if legalMoves:  # Si d'autres actions sont disponibles
                 best_action = random.choice(legalMoves)
@@ -327,7 +335,9 @@ class StrategicAgentWithEvolution(Agent):
             loss.backward()
             self.optimizer.step()
 
-            # print(f"Epoch {epoch + 1}/{epochs}, Loss: {loss.item()}")
+            # Print loss periodically
+            if epoch % 5 == 0:
+                print(f"Epoch {epoch + 1}/{epochs}, Loss: {loss.item()}")
 
         # Update target network periodically
         if self.generation_played % TARGET_UPDATE_FREQUENCY == 0:
@@ -353,8 +363,9 @@ class StrategicAgentWithEvolution(Agent):
         print(f"Replay buffer size: {self.replay_buffer.size()}")
         print(f"Best score so far: {self.best_score}")
 
-        # Train the model
-        self.train(epochs=5)
+        # Train the model every 10 games
+        if self.generation_played % 10 == 0:
+            self.train()
     
     def save_best_score(self):
         with open("best_score.txt", "w") as f:
@@ -378,9 +389,9 @@ class ReplayBuffer:
         self.buffer.append(experience)
 
     def sample(self, batch_size):
-        priorities = [abs(exp[2]) for exp in self.buffer]  # Use reward as priority
+        priorities = [abs(exp[2]) for exp in self.buffer]
         probabilities = priorities / np.sum(priorities)
-        indices = np.random.choice(len(self.buffer), batch_size, p=probabilities)
+        indices = np.random.choice(len(self.buffer), batch_size, replace=False, p=probabilities)
         return [self.buffer[i] for i in indices]
 
     def size(self):

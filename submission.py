@@ -116,6 +116,7 @@ class StrategicAgentWithEvolution(Agent):
         self.recent_patterns = []  # Track recent patterns of positions and actions
         self.max_pattern_length = MAX_PATTERN_LENGTH  # Length of the pattern to track
         self.pattern_penalty = PATTERN_PENALTY  # Penalty for repeating a pattern
+        self.current_score = 0  # Current score of the game
 
         # Check if the model file exists
         if os.path.exists("pacman_model.pth"):
@@ -140,11 +141,11 @@ class StrategicAgentWithEvolution(Agent):
         Saves the current model to a file and pushes the changes to Git.
         """
         os.system('git pull')
-        self.save_best_score()
+        self.load_best_score()
         if self.current_score > self.best_score:
             torch.save(self.model.state_dict(), "pacman_model.pth")
             print("New model saved as 'pacman_model.pth'.")
-
+            self.save_best_score()
             # Execute Git commands
             os.system('git add *')
             os.system('git commit -m "auto-update: model updated"')
@@ -357,16 +358,16 @@ class StrategicAgentWithEvolution(Agent):
         Called at the end of each game to train the model and restart the game.
         """
         self.generation_played += 1
-        current_score = gameState.getScore()
+        self.current_score = gameState.getScore()
         self.load_best_score()
         # Update best score if the current score is higher
-        if current_score > self.best_score:
-            print(f"New high score achieved: {current_score} (previous best: {self.best_score}).")
-            self.best_score = current_score
+        if self.current_score > self.best_score:
+            print(f"New high score achieved: {self.current_score} (previous best: {self.best_score}).")
+            self.best_score = self.current_score
             self.save_model()            
             self.save_best_score()
         else:
-            print(f"Game {self.generation_played} ended with score {current_score}. No improvement.")
+            print(f"Game {self.generation_played} ended with score {self.current_score}. No improvement.")
 
         print(f"Replay buffer size: {self.replay_buffer.size()}")
         print(f"Best score so far: {self.best_score}")

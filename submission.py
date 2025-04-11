@@ -336,7 +336,7 @@ class StrategicAgentWithEvolution(Agent):
             self.optimizer.step()
 
             # Print loss periodically
-            if epoch % 5 == 0:
+            if epoch % 10 == 0:
                 print(f"Epoch {epoch + 1}/{epochs}, Loss: {loss.item()}")
 
         # Update target network periodically

@@ -1,3 +1,4 @@
+import time
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -146,6 +147,8 @@ class StrategicAgentWithEvolution(Agent):
             torch.save(self.model.state_dict(), "pacman_model.pth")
             print("New model saved as 'pacman_model.pth'.")
             self.save_best_score()
+            # Delay to allow for file system updates
+            time.sleep(2)
             # Execute Git commands
             os.system('git add *')
             os.system('git commit -m "auto-update: model updated"')

@@ -366,8 +366,8 @@ class StrategicAgentWithEvolution(Agent):
         # Update best score if the current score is higher
         if self.current_score > self.best_score:
             print(f"New high score achieved: {self.current_score} (previous best: {self.best_score}).")
-            self.save_model()
             self.best_score = self.current_score
+            self.save_model()
         else:
             print(f"Game {self.generation_played} ended with score {self.current_score}. No improvement.")
 

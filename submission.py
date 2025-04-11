@@ -117,7 +117,7 @@ class StrategicAgentWithEvolution(Agent):
         self.recent_patterns = []  # Track recent patterns of positions and actions
         self.max_pattern_length = MAX_PATTERN_LENGTH  # Length of the pattern to track
         self.pattern_penalty = PATTERN_PENALTY  # Penalty for repeating a pattern
-        self.current_score = 0  # Current score of the game
+        self.current_score = self.load_best_score()  # Current score of the game
 
         # Check if the model file exists
         if os.path.exists("pacman_model.pth"):

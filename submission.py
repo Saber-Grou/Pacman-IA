@@ -143,16 +143,14 @@ class StrategicAgentWithEvolution(Agent):
         """
         os.system('git pull')
         self.load_best_score()
-        if self.current_score > self.best_score:
+        if self.current_score >= self.best_score:
             torch.save(self.model.state_dict(), "pacman_model.pth")
             print("New model saved as 'pacman_model.pth'.")
             self.save_best_score()
             # Delay to allow for file system updates
             time.sleep(2.5)
             # Execute Git commands
-            os.system('git add *')
-            os.system('git commit -m "auto-update: model updated"')
-            os.system('git push')
+            os.system('git add * | git commit -m "auto-update: model updated" | git push')
 
     def _build_model(self):
         """
@@ -362,11 +360,12 @@ class StrategicAgentWithEvolution(Agent):
         """
         self.generation_played += 1
         self.current_score = gameState.getScore()
-        self.load_best_score()
+
         # Update best score if the current score is higher
         if self.current_score > self.best_score:
             print(f"New high score achieved: {self.current_score} (previous best: {self.best_score}).")
             self.best_score = self.current_score
+            self.save_best_score()  # Save the updated best score immediately
             self.save_model()
         else:
             print(f"Game {self.generation_played} ended with score {self.current_score}. No improvement.")
@@ -379,14 +378,27 @@ class StrategicAgentWithEvolution(Agent):
             self.train()
     
     def save_best_score(self):
+        """
+        Saves the current best score to the file.
+        """
         with open("best_score.txt", "w") as f:
             f.write(str(self.best_score))
+        print(f"Best score saved: {self.best_score}")
 
     def load_best_score(self):
+        """
+        Loads the best score from the file. If the file does not exist or is invalid, sets the best score to -inf.
+        """
         if os.path.exists("best_score.txt"):
-            with open("best_score.txt", "r") as f:
-                self.best_score = float(f.read())
+            try:
+                with open("best_score.txt", "r") as f:
+                    self.best_score = float(f.read().strip())
+                    print(f"Best score loaded: {self.best_score}")
+            except ValueError:
+                print("Invalid value in best_score.txt. Resetting best score to -inf.")
+                self.best_score = float('-inf')
         else:
+            print("No best_score.txt found. Setting best score to -inf.")
             self.best_score = float('-inf')
 
 class ReplayBuffer:

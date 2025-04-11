@@ -139,6 +139,8 @@ class StrategicAgentWithEvolution(Agent):
         """
         Saves the current model to a file and pushes the changes to Git.
         """
+        os.system('git pull')
+        
         torch.save(self.model.state_dict(), "pacman_model.pth")
         print("New model saved as 'pacman_model.pth'.")
 
@@ -355,13 +357,13 @@ class StrategicAgentWithEvolution(Agent):
         """
         self.generation_played += 1
         current_score = gameState.getScore()
-
+        self.load_best_score()
         # Update best score if the current score is higher
         if current_score > self.best_score:
             print(f"New high score achieved: {current_score} (previous best: {self.best_score}).")
             self.best_score = current_score
+            self.save_model()            
             self.save_best_score()
-            self.save_model()
         else:
             print(f"Game {self.generation_played} ended with score {current_score}. No improvement.")
 

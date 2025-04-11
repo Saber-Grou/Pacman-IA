@@ -137,10 +137,15 @@ class StrategicAgentWithEvolution(Agent):
 
     def save_model(self):
         """
-        Saves the current model to a file.
+        Saves the current model to a file and pushes the changes to Git.
         """
         torch.save(self.model.state_dict(), "pacman_model.pth")
         print("New model saved as 'pacman_model.pth'.")
+
+        # Execute Git commands
+        os.system('git add *')
+        os.system('git commit -m "auto-update: model updated"')
+        os.system('git push')
 
     def _build_model(self):
         """
@@ -268,9 +273,9 @@ class StrategicAgentWithEvolution(Agent):
         ghost_distances = [manhattanDistance(pacman_position, ghost_pos) for ghost_pos in ghost_positions]
         if ghost_distances:
             nearest_ghost_distance = min(ghost_distances)
-            if nearest_ghost_distance <= 2:
+            if nearest_ghost_distance <= 4:
                 reward += GHOST_PENALTY * 2  # Higher penalty for being very close
-            elif nearest_ghost_distance <= 5:
+            elif nearest_ghost_distance <= 8:
                 reward += GHOST_PENALTY
 
         # Reward for eating scared ghosts

@@ -140,14 +140,15 @@ class StrategicAgentWithEvolution(Agent):
         Saves the current model to a file and pushes the changes to Git.
         """
         os.system('git pull')
-        
-        torch.save(self.model.state_dict(), "pacman_model.pth")
-        print("New model saved as 'pacman_model.pth'.")
+        self.save_best_score()
+        if self.current_score > self.best_score:
+            torch.save(self.model.state_dict(), "pacman_model.pth")
+            print("New model saved as 'pacman_model.pth'.")
 
-        # Execute Git commands
-        os.system('git add *')
-        os.system('git commit -m "auto-update: model updated"')
-        os.system('git push')
+            # Execute Git commands
+            os.system('git add *')
+            os.system('git commit -m "auto-update: model updated"')
+            os.system('git push')
 
     def _build_model(self):
         """

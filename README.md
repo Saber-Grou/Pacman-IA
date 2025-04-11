@@ -31,6 +31,10 @@ pip install future
    ```zsh
    python pacman.py -p StrategicAgentWithEvolution -l mediumClassic -n 10000 --frameTime 0 -q
    ```
+   Or
+   ```zsh
+   python pacman.py -p StrategicAgentWithEvolution -l originalClassic -n 100000 --frameTime 0 -q
+   ```
 
 2. **Minimax Agent**:
    ```zsh

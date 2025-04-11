@@ -143,7 +143,7 @@ class StrategicAgentWithEvolution(Agent):
         """
         os.system('git pull')
         self.load_best_score()
-        if self.current_score > self.best_score:
+        if self.current_score >= self.best_score:
             torch.save(self.model.state_dict(), "pacman_model.pth")
             print("New model saved as 'pacman_model.pth'.")
             self.save_best_score()

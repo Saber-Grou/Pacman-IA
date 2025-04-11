@@ -143,14 +143,18 @@ class StrategicAgentWithEvolution(Agent):
         """
         os.system('git pull')
         self.load_best_score()
-        if self.current_score >= self.best_score:
+        if self.current_score > self.best_score:
             torch.save(self.model.state_dict(), "pacman_model.pth")
             print("New model saved as 'pacman_model.pth'.")
             self.save_best_score()
             # Delay to allow for file system updates
             time.sleep(2.5)
             # Execute Git commands
-            os.system('git add * | git commit -m "auto-update: model updated" | git push')
+            os.system('git add *')
+            time.sleep(0.5)
+            os.system('git commit -m "auto-update: model updated"')
+            time.sleep(0.5)
+            os.system('git push')
 
     def _build_model(self):
         """

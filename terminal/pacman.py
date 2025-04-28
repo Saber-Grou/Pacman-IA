@@ -340,7 +340,6 @@ class PacmanRules:
       state.data.food = state.data.food.copy()
       state.data.food[x][y] = False
       state.data._foodEaten = position
-      # TODO: cache numFood?
       numFood = state.getNumFood()
       if numFood == 0 and not state.data._lose:
         state.data.scoreChange += 500
@@ -358,7 +357,7 @@ class GhostRules:
   """
   These functions dictate how ghosts interact with their environment.
   """
-  GHOST_SPEED=1.0
+  GHOST_SPEED=0.8
   def getLegalActions( state, ghostIndex ):
     """
     Ghosts cannot stop, and cannot turn around unless they

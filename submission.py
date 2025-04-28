@@ -34,7 +34,7 @@ class MultiAgentSearchAgent(Agent):
     This class provides some common elements to all multi-agent searchers.
     """
     def __init__(self, evalFn='scoreEvaluationFunction', depth='2'):
-        self.index = 0  # Pacman is always agent index 0
+        self.index = 0
         self.evaluationFunction = util.lookup(evalFn, globals())
         self.depth = int(depth)
 
@@ -50,7 +50,6 @@ class MinimaxAgent(MultiAgentSearchAgent):
         """
 
         def minimax(agentIndex, depth, state):
-            # Terminal state: win, lose, or depth limit reached
             if state.isWin() or state.isLose() or depth == self.depth:
                 return self.evaluationFunction(state)
 
@@ -80,7 +79,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
             bestValue = float('inf')
             nextAgent = agentIndex + 1
-            if nextAgent == state.getNumAgents():  # Last ghost, go to next depth
+            if nextAgent == state.getNumAgents():
                 nextAgent = 0
                 depth += 1
 
